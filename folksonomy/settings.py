@@ -1,10 +1,10 @@
 import os
 
 # Postgres
-POSTGRES_USER = os.environ.get("POSTGRES_USER", None) # Leave empty if no user exists for database
-POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", None) # Leave empty if no password exists for user
-POSTGRES_HOST = os.environ.get("POSTGRES_HOST", None) # Change if necessary
-POSTGRES_DATABASE = os.environ.get("POSTGRES_DATABASE", 'folksonomy')
+POSTGRES_USER =  "postgres" #os.environ.get("POSTGRES_USER", None) # Leave empty if no user exists for database
+POSTGRES_PASSWORD = "root" # os.environ.get("POSTGRES_PASSWORD", None) # Leave empty if no password exists for user
+POSTGRES_HOST = "localhost" #os.environ.get("POSTGRES_HOST", None) # Change if necessary
+POSTGRES_DATABASE = "postgres" # os.environ.get("POSTGRES_DATABASE", 'folksonomy')
 
 
 # If you're in dev, you can specify another auth_server; eg.

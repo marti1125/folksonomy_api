@@ -15,7 +15,7 @@ from . import settings
 
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__) # report this!!
 
 conn = weakref.WeakKeyDictionary()
 """associate each event_loop with a connection pool"""
@@ -36,20 +36,26 @@ class NotInAsyncIOError(Exception):
 async def get_conn():
     """Get current database connection, creating it if needed"""
     global conn
-    loop = asyncio.get_event_loop()
-    if loop is None:
-        raise NotInAsyncIOError("This method only works with asyncio")
-    _conn = conn.get(loop)
-    if _conn is None:
-        _conn = await aiopg.create_pool(
-            dbname=settings.POSTGRES_DATABASE,
-            user=settings.POSTGRES_USER,
-            password=settings.POSTGRES_PASSWORD,
-            host=settings.POSTGRES_HOST,
-            async_=True,
-        )
-        conn[loop] = _conn
-    return _conn
+    log.info("get_conn")
+    try:
+        loop = asyncio.get_event_loop()
+        if loop is None:
+            raise NotInAsyncIOError("This method only works with asyncio")
+        _conn = conn.get(loop)
+        if _conn is None:
+            log.info(settings.POSTGRES_HOST)
+            _conn = await aiopg.create_pool(
+                dbname="postgres",
+                user="postgres",
+                password="root",
+                host="localhost",
+                async_=True,
+            )
+            conn[loop] = _conn
+        return _conn
+    except Exception as e:
+        log.info(f"error.... {str(e)}")
+        raise e
 
 
 def cursor():
@@ -75,6 +81,7 @@ async def transaction():
     """Context manager creating cursor in a transaction"""
     global cur
     global conn
+    log.info(conn)
     try:
         _pool = await get_conn()
         async with _pool.acquire() as _conn:
@@ -83,6 +90,9 @@ async def transaction():
                 async with _cur.begin():
                     cur.set(_cur)
                     yield _cur
+    except Exception as e:
+        log.info(f"error.... {str(e)}")
+        raise e
     finally:
         cur.set(None)
 

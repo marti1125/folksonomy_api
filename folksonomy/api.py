@@ -24,7 +24,7 @@ The API use the main following variables:
 * [Documented properties](https://wiki.openfoodfacts.org/Folksonomy/Property)
 """
 app = FastAPI(title="Open Food Facts folksonomy REST API",
-    description=description)
+    description=description, debug=True)
 # Allow anyone to call the API from their own apps
 app.add_middleware(
     CORSMiddleware,
